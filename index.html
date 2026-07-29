@@ -150,6 +150,7 @@
 <button class="nav-btn" data-page="moves"><span>🧾</span>Gastos</button>
 <button class="nav-btn" data-page="cards"><span>💳</span>Cuentas</button>
 <button class="nav-btn" data-page="analysis"><span>📊</span>Análisis</button>
+<button class="nav-btn" data-page="settings"><span>⚙️</span>Ajustes</button>
 </nav>
 
 <div class="modal" id="cardModal"><div class="modal-box">
@@ -196,6 +197,8 @@
 
 <script>
 const $=id=>document.getElementById(id), today=()=>new Date().toISOString().slice(0,10), ym=d=>String(d).slice(0,7), uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+// Referencias explícitas para evitar depender de variables globales implícitas del navegador.
+document.querySelectorAll("[id]").forEach(el=>{if(/^[A-Za-z_$][\w$]*$/.test(el.id))window[el.id]=el});
 const categories=[["Comida","🍽️"],["Supermercado","🛒"],["Transporte","🚗"],["Casa","🏠"],["Servicios","💡"],["Salud","🩺"],["Entretenimiento","🎬"],["Ropa","👕"],["Educación","📚"],["Viajes","✈️"],["Otros","📦"]];
 const labels={card_purchase:"Compra con tarjeta",cash_expense:"Retiro / gasto efectivo",card_payment:"Pago de tarjeta",income:"Ingreso / nómina",saving:"Transferencia a ahorro",account_transfer:"Transferencia ahorro a débito",fixed_expense:"Gasto fijo",msi_purchase:"Compra a MSI"};
 const emoji={card_purchase:"💳",cash_expense:"💵",card_payment:"🧾",income:"💰",saving:"🐷",account_transfer:"🔄",fixed_expense:"📌",msi_purchase:"🗓️"};
@@ -210,7 +213,7 @@ let d;
 try{
   d=JSON.parse(localStorage.getItem("financeControlV6")||localStorage.getItem("financeControlV5")||localStorage.getItem("financeControlV4")||localStorage.getItem("financeControlV3")||"null")
 }catch{};
-d=d||structuredClone(defaults);
+d=d||JSON.parse(JSON.stringify(defaults));
 d.settings={...defaults.settings,...(d.settings||{})};
 d.monthlyPlans=d.monthlyPlans||{};
 d.reviewedReminders=d.reviewedReminders||{};
@@ -383,7 +386,25 @@ document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>goTo(b.dataset
 function applyTheme(){document.documentElement.dataset.theme=data.settings.theme||"light";themeBtn.textContent=data.settings.theme==="dark"?"☀️":"🌙"};privacyBtn.onclick=()=>{data.settings.privacy=!data.settings.privacy;save()};function toggleTheme(){data.settings.theme=data.settings.theme==="dark"?"light":"dark";save()}themeBtn.onclick=themeSettingsBtn.onclick=toggleTheme;
 function canvas(id){let c=$(id),r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=r.width*d;c.height=250*d;let x=c.getContext("2d");x.scale(d,d);return{x,w:r.width,h:250}}
 function drawCharts(){requestAnimationFrame(()=>{let a=canvas("trendChart"),months=[],n=new Date();for(let i=5;i>=0;i--){let d=new Date(n.getFullYear(),n.getMonth()-i,1);months.push(d.toISOString().slice(0,7))}let vals=months.map(m=>stats(m).real),mx=Math.max(1,...vals)*1.15;a.x.clearRect(0,0,a.w,a.h);a.x.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--primary");a.x.lineWidth=3;a.x.beginPath();vals.forEach((v,i)=>{let px=35+i*(a.w-55)/5,py=20+185*(1-v/mx);i?a.x.lineTo(px,py):a.x.moveTo(px,py);a.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--muted");a.x.fillText(months[i].slice(5),px-6,235)});a.x.stroke();let b=canvas("categoryChart"),rows={};data.movements.filter(z=>ym(z.date)===selectedMonth&&["card_purchase","cash_expense","msi_purchase"].includes(z.type)).forEach(z=>rows[z.category]=(rows[z.category]||0)+Number(z.amount));let arr=Object.entries(rows).sort((x,y)=>y[1]-x[1]).slice(0,6),max=Math.max(1,...arr.map(x=>x[1]));b.x.clearRect(0,0,b.w,b.h);arr.forEach(([k,v],i)=>{let y=15+i*36;b.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--muted");b.x.fillText(cat(k).emoji+" "+k,8,y+14);b.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--primary");b.x.fillRect(110,y,(b.w-150)*v/max,18);b.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--text");b.x.fillText(money(v),115+(b.w-150)*v/max,y+14)})})}
-exportBtn.onclick=()=>{let a=document.createElement("a"),b=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});a.href=URL.createObjectURL(b);a.download="respaldo-finanzas-"+today()+".json";a.click()};importInput.onchange=async e=>{try{data=JSON.parse(await e.target.files[0].text());save()}catch{alert("Archivo inválido")}}
+exportBtn.onclick=()=>{
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download="respaldo-finanzas-"+today()+".json";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+importInput.onchange=async e=>{
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  try{
+    const imported=JSON.parse(await file.text());
+    if(!imported||typeof imported!=="object"||!Array.isArray(imported.movements)||!Array.isArray(imported.cards)||!Array.isArray(imported.accounts))throw new Error("Formato no válido");
+    const ok=confirm("Importar reemplazará la información guardada en este dispositivo. ¿Continuar?");
+    if(!ok){e.target.value="";return}
+    localStorage.setItem("financeControlV6_backup_before_import",JSON.stringify(data));
+    data=imported;save();alert("Respaldo importado correctamente");
+  }catch(err){console.error(err);alert("Archivo inválido o incompatible")}finally{e.target.value=""}
+}
 populate();setType("card_purchase");renderAll();
 </script>
 </body></html>
