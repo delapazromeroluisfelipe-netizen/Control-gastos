@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mi Control Financiero V6 Plus</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--text:#172039;--muted:#6d7690;--line:#e5e9f2;--primary:#4567f2;--primary2:#7f94ff;--success:#18966b;--warning:#d99a20;--danger:#d95362;--cash:#7b5bd6;--shadow:0 12px 30px rgba(26,39,74,.08);--radius:22px}
+[data-theme="dark"]{--bg:#101522;--card:#171e2e;--text:#f4f7ff;--muted:#9ca8bf;--line:#293247;--primary:#7890ff;--primary2:#4f65ce;--success:#4dcc98;--warning:#f0b54a;--danger:#ff7a87;--cash:#aa8cff;--shadow:0 12px 30px rgba(0,0,0,.25)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}.app{min-height:100vh}.sidebar{display:none}.main{max-width:1180px;margin:auto;padding:18px 15px 150px}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.brand{font-weight:900;font-size:1.18rem}.brand small{display:block;color:var(--muted);font-size:.72rem;margin-top:3px}.top-actions{display:flex;gap:8px}.icon-btn{width:42px;height:42px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px}.page{display:none}.page.active{display:block}.hero{padding:22px;border-radius:27px;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary2));box-shadow:var(--shadow);margin-bottom:13px}.hero.payments{background:linear-gradient(135deg,#172b57,#5278cc)}.hero-row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.hero h1{font-size:.93rem;margin:0 0 7px}.amount{font-size:2.12rem;font-weight:950;letter-spacing:-1px}.sub{font-size:.73rem;opacity:.83;margin-top:4px}.month-select{width:170px;max-width:48vw;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:8px;font-size:.78rem}.month-select option{color:#111}.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:17px}.hero-mini{padding:11px;border-radius:15px;background:rgba(255,255,255,.12)}.hero-mini b{display:block}.hero-mini span{font-size:.68rem;opacity:.82}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:0 5px 16px rgba(25,40,75,.04)}.section-title{display:flex;align-items:center;justify-content:space-between;margin:20px 2px 9px}.section-title h2{font-size:1rem;margin:0}.section-title small{color:var(--muted)}.grid{display:grid;gap:11px}.grid-2{grid-template-columns:1fr 1fr}.metric{min-height:105px}.metric .icon{font-size:1.3rem}.metric .label{font-size:.72rem;color:var(--muted);margin-top:7px}.metric .value{font-size:1.12rem;font-weight:900;margin-top:3px}.progress{height:9px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:9px}.progress i{display:block;height:100%;background:var(--primary);border-radius:99px}.bar-head,.bar-foot{display:flex;justify-content:space-between;gap:8px}.bar-head{align-items:center}.bar-foot{font-size:.7rem;color:var(--muted);margin-top:6px}.btn{border:0;border-radius:14px;padding:11px 14px;background:var(--primary);color:#fff;font-weight:800}.btn.small{padding:7px 10px;font-size:.72rem}.btn.secondary{background:rgba(69,103,242,.12);color:var(--primary)}.btn.ghost{background:var(--bg);color:var(--text)}.btn.danger{background:rgba(217,83,98,.12);color:var(--danger)}.list{display:grid;gap:8px}.list-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px;border:1px solid var(--line);border-radius:15px;background:color-mix(in srgb,var(--card) 90%,var(--bg))}.item-left{display:flex;align-items:center;gap:10px;min-width:0}.item-icon{width:39px;height:39px;border-radius:12px;background:rgba(69,103,242,.12);display:grid;place-items:center}.item-text{min-width:0}.item-text b{font-size:.84rem;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.item-text span{font-size:.68rem;color:var(--muted);display:block;margin-top:2px}.item-amount{text-align:right;font-weight:900;font-size:.87rem;white-space:nowrap;max-width:42%}
+.item-text span{white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+.list-item{overflow:hidden}
+.analysis-copy{max-width:52%;text-align:right;font-size:.68rem;color:var(--muted);line-height:1.35;white-space:normal;overflow-wrap:anywhere}
+.private-value{filter:none;transition:.2s}.private-value.hidden-value{filter:blur(8px);user-select:none}
+.reminder{border-left:4px solid var(--warning);background:color-mix(in srgb,var(--warning) 8%,var(--card))}.origin-note{font-size:.67rem;color:var(--muted);line-height:1.35;margin-top:4px}.paid-chip{display:inline-flex;padding:4px 8px;border-radius:99px;background:color-mix(in srgb,var(--success) 14%,var(--card));color:var(--success);font-size:.66rem;font-weight:800}
+.item-amount small{display:block;color:var(--muted);font-weight:500;font-size:.65rem;margin-top:2px}.amount-income{color:var(--success)}.amount-saving{color:var(--warning)}.amount-expense{color:var(--danger)}.amount-withdraw{color:var(--cash)}.form-card{background:var(--card);border:1px solid var(--line);border-radius:25px;padding:17px}.quick-types{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:13px}.type-chip{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:13px;padding:9px 5px;font-size:.68rem}.type-chip span{display:block;font-size:1.2rem}.type-chip.active{background:rgba(69,103,242,.12);border-color:var(--primary);color:var(--primary);font-weight:800}.form-grid{display:grid;gap:12px}.field label{display:block;color:var(--muted);font-size:.7rem;font-weight:800;margin:0 0 5px 3px}.field input,.field select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:13px;padding:12px}.form-actions{display:flex;gap:8px;margin-top:13px}.form-actions>*{flex:1}.table-wrap{overflow:auto}.table{border-collapse:collapse;width:100%;min-width:710px}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);font-size:.74rem;text-align:left}.table th{font-size:.67rem;color:var(--muted)}.actions{display:flex;gap:5px}.credit-card{padding:17px;border-radius:20px;color:#fff;min-height:145px}.credit-card h3{margin:0 0 20px}.cc-balance{font-size:1.3rem;font-weight:900}.cc-meta{display:flex;justify-content:space-between;font-size:.68rem;margin-top:17px}.note{padding:11px;border:1px solid var(--line);border-radius:14px;background:var(--card);font-size:.72rem;color:var(--muted);line-height:1.4}.fab{position:fixed;right:17px;bottom:84px;width:58px;height:58px;border:0;border-radius:19px;background:var(--primary);color:#fff;font-size:1.7rem;z-index:20;box-shadow:0 12px 26px rgba(69,103,242,.38)}.fab.hidden{display:none}.bottom-nav{position:fixed;left:10px;right:10px;bottom:10px;height:65px;border:1px solid var(--line);background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(16px);border-radius:21px;display:flex;justify-content:space-around;align-items:center;z-index:15;box-shadow:var(--shadow)}.nav-btn{border:0;background:transparent;color:var(--muted);font-size:.62rem;display:flex;flex-direction:column;gap:2px;align-items:center}.nav-btn span{font-size:1.2rem}.nav-btn.active{color:var(--primary);font-weight:900}.modal{position:fixed;inset:0;background:rgba(0,0,0,.47);display:none;align-items:flex-end;z-index:40}.modal.open{display:flex}.modal-box{width:100%;max-height:92vh;overflow:auto;background:var(--card);border-radius:27px 27px 0 0;padding:17px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-head h3{margin:0}.safe-fab{padding-right:66px}.chart-card canvas{width:100%;height:250px}.empty{text-align:center;padding:22px;color:var(--muted)}
+@media(min-width:860px){.app{display:grid;grid-template-columns:235px 1fr}.sidebar{display:block;background:var(--card);border-right:1px solid var(--line);height:100vh;position:sticky;top:0;padding:25px 16px}.logo{font-weight:900;margin:0 10px 26px}.logo small{display:block;color:var(--muted);font-size:.7rem}.side-btn{width:100%;border:0;background:transparent;color:var(--muted);text-align:left;padding:11px;border-radius:13px;margin:2px 0}.side-btn.active{background:rgba(69,103,242,.12);color:var(--primary);font-weight:900}.main{padding:27px 30px 55px}.bottom-nav,.fab{display:none!important}.grid-2{grid-template-columns:repeat(4,1fr)}.desktop-2{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}.cards-grid{grid-template-columns:repeat(2,1fr)}.form-grid.cols-2{grid-template-columns:1fr 1fr}.modal{align-items:center;justify-content:center}.modal-box{max-width:640px;border-radius:27px}.safe-fab{padding-right:11px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="logo">💸 Mi Control<small>Finanzas personales</small></div>
+<button class="side-btn active" data-page="home">🏠 Inicio</button>
+<button class="side-btn" data-page="add">➕ Añadir movimiento</button>
+<button class="side-btn" data-page="moves">🧾 Movimientos</button>
+<button class="side-btn" data-page="cards">💳 Tarjetas y cuentas</button>
+<button class="side-btn" data-page="fixed">📌 Gastos fijos</button>
+<button class="side-btn" data-page="analysis">📊 Análisis</button>
+<button class="side-btn" data-page="settings">⚙️ Ajustes</button>
+</aside>
+<main class="main">
+<div class="topbar"><div class="brand">Hola 👋<small>Tu dinero, más claro y bajo control</small></div><div class="top-actions"><button class="icon-btn" id="themeBtn">🌙</button></div></div>
+
+<section id="home" class="page active">
+<div class="hero">
+<div class="hero-row"><div><h1>Gasto real del mes</h1><div class="amount" id="heroSpend">$0</div><div class="sub" id="heroPeriod"></div></div><select id="monthSelect" class="month-select"></select></div>
+<div class="hero-grid"><div class="hero-mini"><b id="heroCash">$0</b><span>Tarjetas + efectivo</span></div><div class="hero-mini"><b id="heroAvailable">$0</b><span>Disponible calculado</span></div></div>
+</div>
+
+<div class="hero payments">
+<div class="hero-row"><div><h1>Pagos de tarjetas del mes</h1><div class="amount" id="paymentMonthTotal">$0</div><div class="sub">Pagos para no generar intereses asignados al mes</div></div></div>
+<div class="hero-grid"><div class="hero-mini"><b id="nextPaymentEstimate">$0</b><span>Pago aproximado siguiente mes</span></div><div class="hero-mini"><b id="pendingCards">0</b><span>Tarjetas pendientes</span></div></div>
+</div>
+
+<div class="card" style="margin-bottom:11px">
+<div class="bar-head"><b>🎯 Presupuesto automático</b><span id="budgetPct"></span></div>
+<div class="progress"><i id="budgetBar"></i></div>
+<div class="bar-foot"><span id="budgetFormula"></span><span id="budgetRemaining"></span></div>
+</div>
+<div class="card" style="margin-bottom:11px">
+<div class="bar-head"><b>🐷 Meta de ahorro ajustada</b><button class="btn small secondary" onclick="goToPlan()">Modificar meta</button></div>
+<div class="progress"><i id="savingBar" style="background:var(--success)"></i></div>
+<div class="bar-foot"><span id="savingProgress"></span><span id="savingShortfall"></span></div>
+</div>
+
+<div class="card" style="margin-bottom:11px">
+<div class="bar-head"><div><b>🏦 Ahorro actual</b><div class="sub" style="color:var(--muted)">Saldo disponible en cuentas de ahorro</div></div><button class="btn small secondary" id="privacyBtn">🙈 Ocultar</button></div>
+<div class="amount private-value" id="currentSavings" style="color:var(--text);font-size:1.8rem;margin-top:8px">$0</div>
+</div>
+<div id="cutReminders" class="list" style="margin-bottom:11px"></div>
+<div class="grid grid-2">
+<div class="card metric"><div class="icon">💳</div><div class="label">Compras con tarjeta</div><div class="value" id="mCard">$0</div></div>
+<div class="card metric"><div class="icon">💵</div><div class="label">Gastos en efectivo</div><div class="value" id="mCash">$0</div></div>
+<div class="card metric"><div class="icon">📌</div><div class="label">Gastos fijos</div><div class="value" id="mFixed">$0</div></div>
+<div class="card metric"><div class="icon">🐷</div><div class="label">Ahorro neto</div><div class="value" id="mSavings">$0</div></div>
+</div>
+
+<div class="desktop-2">
+<div><div class="section-title"><h2>Pagos incluidos en el mes</h2><small id="paymentMonthLabel"></small></div><div class="card safe-fab"><div id="monthPaymentsList" class="list"></div></div></div>
+<div><div class="section-title"><h2>Movimientos recientes</h2></div><div class="card"><div id="recentList" class="list"></div></div></div>
+</div>
+</section>
+
+<section id="add" class="page">
+<div class="section-title"><h2>Registro rápido</h2><small>Sin duplicar gastos</small></div>
+<div class="form-card">
+<div class="quick-types" id="typeChips">
+<button class="type-chip active" data-type="card_purchase"><span>💳</span>Compra tarjeta</button>
+<button class="type-chip" data-type="cash_expense"><span>💵</span>Retiro / gasto efectivo</button>
+
+<button class="type-chip" data-type="card_payment"><span>🧾</span>Pago tarjeta</button>
+<button class="type-chip" data-type="income"><span>💰</span>Nómina</button>
+<button class="type-chip" data-type="saving"><span>🐷</span>Mandar a ahorro</button>
+<button class="type-chip" data-type="account_transfer"><span>🔄</span>Ahorro → débito</button>
+<button class="type-chip" data-type="fixed_expense"><span>📌</span>Gasto fijo</button>
+<button class="type-chip" data-type="msi_purchase"><span>🗓️</span>Compra MSI</button>
+</div>
+<form id="quickForm">
+<input type="hidden" id="editId"><input type="hidden" id="movementType" value="card_purchase">
+<div class="form-grid cols-2">
+<div class="field"><label>Monto</label><input id="amount" type="number" min="0" step=".01" required></div>
+<div class="field"><label>Fecha</label><input id="date" type="date" required></div>
+<div class="field"><label>Descripción</label><input id="description" required></div>
+<div class="field" id="categoryField"><label>Categoría</label><select id="category"></select></div>
+<div class="field" id="cardField"><label>Tarjeta de crédito</label><select id="cardId"></select></div>
+<div class="field" id="accountField" style="display:none"><label id="accountLabel">Cuenta</label><select id="accountId"></select></div>
+<div class="field" id="sourceAccountField" style="display:none"><label>Cuenta origen</label><select id="sourceAccountId"></select></div>
+<div class="field" id="destinationAccountField" style="display:none"><label>Cuenta destino</label><select id="destinationAccountId"></select></div>
+<div class="field" id="monthsField" style="display:none"><label>Meses sin intereses</label><input id="months" type="number" min="2" max="48" value="6"></div>
+<div class="field" id="frequencyField" style="display:none"><label>Periodicidad</label><select id="frequency"><option value="weekly">Cada semana</option><option value="fortnightly">Cada 2 semanas</option><option value="monthly">Cada mes</option><option value="one_time">Una sola vez</option></select></div>
+<div class="field" id="firstDueDateField" style="display:none"><label>Primera fecha de cargo</label><input id="firstDueDate" type="date"></div>
+<div class="field" id="paymentMethodField" style="display:none"><label>Cómo se paga</label><select id="paymentMethod"><option value="transfer">Transferencia</option><option value="cash">Efectivo</option><option value="card">Tarjeta de crédito</option></select></div>
+</div>
+<div class="form-actions"><button type="button" class="btn ghost" id="clearForm">Limpiar</button><button class="btn">Guardar</button></div>
+</form>
+</div>
+<div class="note" style="margin-top:12px">Las compras se cuentan una sola vez como gasto. El pago posterior de la tarjeta sólo se registra como salida de dinero, no como un gasto nuevo.</div>
+</section>
+
+<section id="moves" class="page">
+<div class="section-title"><h2>Movimientos</h2><button class="btn small" onclick="goTo('add')">+ Nuevo</button></div>
+<div class="card table-wrap"><table class="table"><thead><tr><th>Fecha</th><th>Movimiento</th><th>Categoría</th><th>Origen / destino</th><th>Mes estimado de pago</th><th>Monto</th><th></th></tr></thead><tbody id="movesBody"></tbody></table></div>
+</section>
+
+<section id="cards" class="page">
+<div class="section-title"><h2>Tarjetas de crédito</h2><button class="btn small" onclick="openCardModal()">+ Añadir</button></div>
+<div id="cardsGrid" class="grid cards-grid"></div>
+<div class="section-title"><h2>Cuentas</h2><button class="btn small secondary" onclick="openAccountModal()">+ Añadir</button></div>
+<div id="accountsGrid" class="grid cards-grid"></div>
+</section>
+
+<section id="fixed" class="page">
+<div class="section-title"><h2>Gastos fijos mensuales</h2><button class="btn small" onclick="openFixedModal()">+ Añadir</button></div><div class="note" style="margin-bottom:10px">Cada gasto fijo se incluye en el mes correspondiente. Márcalo como pagado para que también afecte el saldo de la tarjeta, débito o ahorro elegido.</div>
+<div id="fixedList" class="grid"></div>
+</section>
+
+<section id="analysis" class="page">
+<div class="section-title"><h2>Evolución del gasto real</h2><small>Últimos 6 meses</small></div><div class="card chart-card"><canvas id="trendChart"></canvas></div>
+<div class="section-title"><h2>Gasto por categoría</h2></div><div class="card chart-card"><canvas id="categoryChart"></canvas></div>
+<div class="section-title"><h2>¿Cuándo conviene comprar?</h2><small>Días para pasar el corte</small></div><div class="card"><div id="cutoffAnalysis" class="list"></div></div>
+</section>
+
+<section id="settings" class="page">
+<div class="section-title"><h2>Plan del mes</h2><small id="planMonthLabel"></small></div>
+<div class="form-card"><div class="form-grid cols-2">
+<div class="field"><label>Ingreso esperado</label><input id="planIncome" type="number" min="0"></div>
+<div class="field"><label>Meta base de ahorro</label><input id="planSavingGoal" type="number" min="0"></div>
+<div class="field"><label>Día aproximado de nómina</label><input id="paydayInput" type="number" min="1" max="31"></div>
+</div><div class="note" style="margin-top:11px">El presupuesto se calcula automáticamente: ingreso − meta ajustada de ahorro − pagos de tarjetas del mes − gastos fijos.</div><button class="btn" id="saveMonthPlan" style="width:100%;margin-top:12px">Guardar sólo para este mes</button></div>
+<div class="section-title"><h2>Apariencia</h2></div><button class="btn secondary" id="themeSettingsBtn" style="width:100%">Cambiar tema claro / oscuro</button>
+<div class="section-title"><h2>Respaldo</h2></div><div class="card"><div class="form-actions"><button class="btn secondary" id="exportBtn">📤 Exportar</button><label class="btn ghost" style="text-align:center">📥 Importar<input id="importInput" type="file" accept=".json" hidden></label></div></div>
+</section>
+</main>
+</div>
+
+<button class="fab" id="fab" onclick="goTo('add')">＋</button>
+<nav class="bottom-nav">
+<button class="nav-btn active" data-page="home"><span>🏠</span>Inicio</button>
+<button class="nav-btn" data-page="moves"><span>🧾</span>Gastos</button>
+<button class="nav-btn" data-page="cards"><span>💳</span>Cuentas</button>
+<button class="nav-btn" data-page="analysis"><span>📊</span>Análisis</button>
+</nav>
+
+<div class="modal" id="cardModal"><div class="modal-box">
+<div class="modal-head"><h3>Tarjeta de crédito</h3><button class="icon-btn" onclick="closeModal('cardModal')">✕</button></div>
+<form id="cardForm"><input id="editCardId" type="hidden"><div class="form-grid cols-2">
+<div class="field"><label>Nombre</label><input id="cardName" required></div>
+<div class="field"><label>Últimos 4 dígitos</label><input id="cardLast4" maxlength="4"></div>
+<div class="field"><label>Línea de crédito</label><input id="cardLimit" type="number" min="0"></div>
+<div class="field"><label>Saldo total actual</label><input id="cardBalance" type="number" min="0"></div>
+<div class="field"><label>Día habitual de corte</label><input id="cutDay" type="number" min="1" max="31" required></div>
+<div class="field"><label>Día habitual de pago</label><input id="dueDay" type="number" min="1" max="31" required></div>
+<div class="field"><label>Pago para no generar intereses actual</label><input id="currentDue" type="number" min="0"></div>
+<div class="field"><label>Fecha límite real actual</label><input id="currentDueDate" type="date"></div>
+<div class="field"><label>Mes de control del pago</label><input id="currentDueMonth" type="month"></div>
+<div class="field"><label>Mes en que se originó este gasto</label><input id="dueOriginMonth" type="month"><small style="display:block;color:var(--muted);margin-top:4px">Se usa para mostrar el gasto histórico si todavía no registraste las compras una por una.</small></div>
+<div class="field"><label>Incluir como gasto histórico</label><select id="includeDueHistory"><option value="yes">Sí, si no hay compras registradas</option><option value="no">No</option></select></div>
+<div class="field"><label>Estado</label><select id="currentDueStatus"><option value="pending">⏳ Pendiente</option><option value="paid">✅ Pagado</option></select></div>
+<div class="field"><label>Color</label><select id="cardColor"><option value="#405de6">Azul</option><option value="#6d4bc0">Morado</option><option value="#15956c">Verde</option><option value="#222733">Negro</option></select></div>
+</div><div class="form-actions"><button type="button" class="btn ghost" onclick="closeModal('cardModal')">Cancelar</button><button class="btn">Guardar</button></div></form>
+</div></div>
+
+<div class="modal" id="accountModal"><div class="modal-box">
+<div class="modal-head"><h3>Cuenta</h3><button class="icon-btn" onclick="closeModal('accountModal')">✕</button></div>
+<form id="accountForm"><input id="editAccountId" type="hidden"><div class="form-grid cols-2">
+<div class="field"><label>Nombre</label><input id="accountName" required></div>
+<div class="field"><label>Tipo</label><select id="accountType"><option value="debit">🏦 Débito / nómina</option><option value="savings">🐷 Ahorro</option><option value="cash">💵 Efectivo</option></select></div>
+<div class="field"><label>Saldo inicial</label><input id="accountBalance" type="number" min="0"></div>
+</div><div class="form-actions"><button type="button" class="btn ghost" onclick="closeModal('accountModal')">Cancelar</button><button class="btn">Guardar</button></div></form>
+</div></div>
+
+<div class="modal" id="fixedModal"><div class="modal-box">
+<div class="modal-head"><h3>Gasto fijo</h3><button class="icon-btn" onclick="closeModal('fixedModal')">✕</button></div>
+<form id="fixedForm"><input id="editFixedId" type="hidden"><div class="form-grid cols-2">
+<div class="field"><label>Nombre</label><input id="fixedName" required></div>
+<div class="field"><label>Monto mensual</label><input id="fixedAmount" type="number" min="0" required></div>
+<div class="field"><label>Categoría</label><select id="fixedCategory"></select></div>
+<div class="field"><label>Periodicidad</label><select id="fixedFrequency"><option value="weekly">Cada semana</option><option value="fortnightly">Cada 2 semanas</option><option value="monthly">Cada mes</option><option value="one_time">Una sola vez</option></select></div>
+<div class="field"><label>Primera fecha de cargo</label><input id="fixedFirstDueDate" type="date"></div>
+<div class="field"><label>Medio de pago</label><select id="fixedMethod"><option value="transfer">🏦 Transferencia</option><option value="cash">💵 Efectivo</option><option value="card">💳 Tarjeta de crédito</option></select></div>
+<div class="field" id="fixedCardField"><label>Tarjeta</label><select id="fixedCardId"></select></div>
+<div class="field" id="fixedAccountField"><label>Cuenta</label><select id="fixedAccountId"></select></div>
+</div><div class="form-actions"><button type="button" class="btn ghost" onclick="closeModal('fixedModal')">Cancelar</button><button class="btn">Guardar</button></div></form>
+</div></div>
+
+<script>
+const $=id=>document.getElementById(id), today=()=>new Date().toISOString().slice(0,10), ym=d=>String(d).slice(0,7), uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const categories=[["Comida","🍽️"],["Supermercado","🛒"],["Transporte","🚗"],["Casa","🏠"],["Servicios","💡"],["Salud","🩺"],["Entretenimiento","🎬"],["Ropa","👕"],["Educación","📚"],["Viajes","✈️"],["Otros","📦"]];
+const labels={card_purchase:"Compra con tarjeta",cash_expense:"Retiro / gasto efectivo",card_payment:"Pago de tarjeta",income:"Ingreso / nómina",saving:"Transferencia a ahorro",account_transfer:"Transferencia ahorro a débito",fixed_expense:"Gasto fijo",msi_purchase:"Compra a MSI"};
+const emoji={card_purchase:"💳",cash_expense:"💵",card_payment:"🧾",income:"💰",saving:"🐷",account_transfer:"🔄",fixed_expense:"📌",msi_purchase:"🗓️"};
+const defaults={settings:{payday:7,theme:"light",privacy:false},monthlyPlans:{},reviewedReminders:{},fixedPayments:{},fixedAdjustments:{},cards:[
+{id:"c1",name:"Tarjeta 1",last4:"",limit:10000,balance:0,cutDay:20,dueDay:10,currentDue:0,currentDueDate:"",currentDueMonth:"",currentDueStatus:"pending",color:"#405de6"},
+{id:"c2",name:"Tarjeta 2",last4:"",limit:10000,balance:0,cutDay:12,dueDay:3,currentDue:0,currentDueDate:"",currentDueMonth:"",currentDueStatus:"pending",color:"#6d4bc0"},
+{id:"c3",name:"Tarjeta 3",last4:"",limit:10000,balance:0,cutDay:10,dueDay:3,currentDue:0,currentDueDate:"",currentDueMonth:"",currentDueStatus:"pending",color:"#15956c"},
+{id:"c4",name:"Tarjeta 4",last4:"",limit:10000,balance:0,cutDay:10,dueDay:30,currentDue:0,currentDueDate:"",currentDueMonth:"",currentDueStatus:"pending",color:"#222733"}],
+accounts:[{id:"a1",name:"Cuenta de nómina",type:"debit",balance:0},{id:"a2",name:"Cuenta de ahorro",type:"savings",balance:0},{id:"a3",name:"Efectivo",type:"cash",balance:0}],fixedExpenses:[],movements:[]};
+function load(){
+let d;
+try{
+  d=JSON.parse(localStorage.getItem("financeControlV6")||localStorage.getItem("financeControlV5")||localStorage.getItem("financeControlV4")||localStorage.getItem("financeControlV3")||"null")
+}catch{};
+d=d||structuredClone(defaults);
+d.settings={...defaults.settings,...(d.settings||{})};
+d.monthlyPlans=d.monthlyPlans||{};
+d.reviewedReminders=d.reviewedReminders||{};
+d.fixedPayments=d.fixedPayments||{};
+d.fixedAdjustments=d.fixedAdjustments||{};
+d.cards=(d.cards||defaults.cards).map(c=>({...c,currentDueMonth:c.currentDueMonth||(c.currentDueDate?ym(c.currentDueDate):""),dueOriginMonth:c.dueOriginMonth||(c.currentDueMonth?addMonths(c.currentDueMonth,-1):""),includeDueHistory:c.includeDueHistory!==false}));
+d.accounts=d.accounts||defaults.accounts;
+d.fixedExpenses=(d.fixedExpenses||[]).map(f=>({...f,
+  frequency:f.frequency||"monthly",
+  firstDueDate:f.firstDueDate||(f.start?`${f.start}-${String(f.day||1).padStart(2,"0")}`:today()),
+  paymentMethod:f.paymentMethod||(f.method==="card"?"card":f.method==="cash"?"cash":"transfer"),
+  sourceAccountId:f.sourceAccountId||f.accountId||"",
+  cardId:f.cardId||"",
+  active:f.active!==false
+}));
+d.movements=d.movements||[];
+return d
+}
+let data=load(),selectedMonth=ym(today());
+function save(){localStorage.setItem("financeControlV6",JSON.stringify(data));renderAll()}
+function money(n){return new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",maximumFractionDigits:0}).format(Number(n||0))}
+function monthName(m){let [y,mo]=m.split("-");return new Date(+y,+mo-1,1).toLocaleDateString("es-MX",{month:"long",year:"numeric"})}
+function card(id){return data.cards.find(x=>x.id===id)} function account(id){return data.accounts.find(x=>x.id===id)}
+function cat(name){let x=categories.find(c=>c[0]===name);return {name:name||"Otros",emoji:x?x[1]:"📦"}}
+function plan(m){return data.monthlyPlans[m]||{income:0,savingGoal:0}}
+function addMonths(m,n){let [y,mo]=m.split("-").map(Number),d=new Date(y,mo-1+n,1);return d.toISOString().slice(0,7)}
+
+function paymentControlMonth(c){return c.currentDueMonth||(c.currentDueDate?ym(c.currentDueDate):"")}
+function actualCardPayments(m){return data.cards.filter(c=>paymentControlMonth(c)===m).reduce((s,c)=>s+(c.currentDueStatus==="paid"?0:Number(c.currentDue||0)),0)}
+function purchasePaymentMonth(x){let c=card(x.cardId);if(!c)return "";let d=new Date(x.date+"T12:00:00"),cutMonth=new Date(d.getFullYear(),d.getMonth()+(d.getDate()>c.cutDay?1:0),1);let payMonth=new Date(cutMonth.getFullYear(),cutMonth.getMonth()+(c.dueDay<=c.cutDay?1:0),1);return payMonth.toISOString().slice(0,7)}
+function estimatedPurchasesDue(m){
+let variable=data.movements.filter(x=>["card_purchase","msi_purchase"].includes(x.type)&&purchasePaymentMonth(x)===m).reduce((s,x)=>s+(x.type==="msi_purchase"?Number(x.amount)/Math.max(1,Number(x.months||1)):Number(x.amount)),0);
+let fixed=0;
+for(let o of occurrencesForMonth(addMonths(m,-1))){
+  if(isOccurrenceSkipped(o.f,o.date)||occurrenceMethod(o.f,o.date)!=="card")continue;
+  let cid=occurrenceCard(o.f,o.date);
+  if(cid&&purchasePaymentMonth({date:o.date,cardId:cid,type:"card_purchase",amount:occurrenceAmount(o.f,o.date)})===m)fixed+=occurrenceAmount(o.f,o.date);
+}
+return variable+fixed
+}
+function savingsNet(m){return data.movements.filter(x=>ym(x.date)===m).reduce((s,x)=>{if(x.type==="saving")s+=Number(x.amount);if(x.type==="cash_expense"&&account(x.accountId)?.type==="savings")s-=Number(x.amount);if(x.type==="account_transfer"&&account(x.sourceAccountId)?.type==="savings")s-=Number(x.amount);if(x.type==="card_payment"&&account(x.accountId)?.type==="savings")s-=Number(x.amount);return s},0)}
+function carryShortfall(m){let months=Object.keys(data.monthlyPlans).filter(x=>x<m).sort();let carry=0;for(let mo of months){let base=Number(plan(mo).savingGoal||0),effective=base+carry,actual=savingsNet(mo);carry=Math.max(0,effective-actual)}return carry}
+function effectiveSavingGoal(m){return Number(plan(m).savingGoal||0)+carryShortfall(m)}
+function stats(m){let ms=data.movements.filter(x=>ym(x.date)===m),cardSpend=ms.filter(x=>["card_purchase","msi_purchase"].includes(x.type)).reduce((s,x)=>s+Number(x.amount),0),cash=ms.filter(x=>x.type==="cash_expense").reduce((s,x)=>s+Number(x.amount),0),fixed=fixedForMonth(m),historical=historicalDueForMonth(m),real=cardSpend+cash+fixed+historical,income=ms.filter(x=>x.type==="income").reduce((s,x)=>s+Number(x.amount),0)||Number(plan(m).income||0),pay=actualCardPayments(m),goal=effectiveSavingGoal(m),budget=Math.max(0,income-goal-pay-fixed),remaining=budget-(cardSpend+cash+historical);return{cardSpend,cash,fixed,historical,real,income,pay,goal,budget,remaining,saving:savingsNet(m)}}
+function calcAccountBalance(a){let b=Number(a.balance||0);for(let x of data.movements){let n=Number(x.amount);if(x.type==="income"&&x.accountId===a.id)b+=n;if(x.type==="cash_expense"&&x.accountId===a.id)b-=n;if(["saving","account_transfer"].includes(x.type)){if(x.sourceAccountId===a.id)b-=n;if(x.destinationAccountId===a.id)b+=n}if(x.type==="card_payment"&&x.accountId===a.id)b-=n}b-=fixedPaidAmountForAccount(a);return b}
+
+function calcCardBalance(c){let b=Number(c.balance||0);for(let x of data.movements){let n=Number(x.amount||0);if(x.cardId!==c.id)continue;if(["card_purchase","msi_purchase"].includes(x.type))b+=n;if(x.type==="card_payment")b-=n}b+=fixedPaidAmountForCard(c);return Math.max(0,b)}
+function estimatedCurrentDue(c){let explicit=Number(c.currentDue||0),control=paymentControlMonth(c);let purchases=data.movements.filter(x=>x.cardId===c.id&&["card_purchase","msi_purchase"].includes(x.type)&&purchasePaymentMonth(x)===control).reduce((s,x)=>s+(x.type==="msi_purchase"?Number(x.amount)/Math.max(1,Number(x.months||1)):Number(x.amount)),0);return Math.max(explicit,purchases)}
+function currentSavingsBalance(){return data.accounts.filter(a=>a.type==="savings").reduce((s,a)=>s+calcAccountBalance(a),0)}
+function daysToDate(dateStr){if(!dateStr)return null;let a=new Date();a.setHours(0,0,0,0);let b=new Date(dateStr+"T00:00:00");return Math.ceil((b-a)/86400000)}
+
+
+function occurrenceKey(f,date){return `${f.id}|${date}`}
+function occurrenceAdjustment(f,date){return data.fixedAdjustments[occurrenceKey(f,date)]||{}}
+function occurrenceAmount(f,date){let a=occurrenceAdjustment(f,date);return Number(a.amount!==undefined?a.amount:f.amount||0)}
+function occurrenceSource(f,date){let a=occurrenceAdjustment(f,date);return a.sourceAccountId||f.sourceAccountId||f.accountId||""}
+function occurrenceMethod(f,date){let a=occurrenceAdjustment(f,date);return a.paymentMethod||f.paymentMethod||f.method||"transfer"}
+function occurrenceCard(f,date){let a=occurrenceAdjustment(f,date);return a.cardId||f.cardId||""}
+function isOccurrenceAccepted(f,date){return data.fixedPayments[occurrenceKey(f,date)]==="accepted"||data.fixedPayments[occurrenceKey(f,date)]===true}
+function isOccurrenceSkipped(f,date){return data.fixedPayments[occurrenceKey(f,date)]==="skipped"}
+function occurrencesForFixed(f,startMonth,endMonth){
+  if(!f.active||!f.firstDueDate)return [];
+  let start=new Date(f.firstDueDate+"T12:00:00");
+  let limitStart=new Date(startMonth+"-01T00:00:00");
+  let [ey,em]=endMonth.split("-").map(Number);
+  let limitEnd=new Date(ey,em,0,23,59,59);
+  let out=[],d=new Date(start);
+  while(d<=limitEnd){
+    if(d>=limitStart)out.push(d.toISOString().slice(0,10));
+    if(f.frequency==="weekly")d.setDate(d.getDate()+7);
+    else if(f.frequency==="fortnightly")d.setDate(d.getDate()+14);
+    else if(f.frequency==="monthly")d.setMonth(d.getMonth()+1);
+    else break;
+  }
+  return out;
+}
+function occurrencesForMonth(m){return data.fixedExpenses.flatMap(f=>occurrencesForFixed(f,m,m).map(date=>({f,date})))}
+function dueOccurrenceIsVisible(date){let d=new Date(date+"T00:00:00"),now=new Date();now.setHours(23,59,59,999);return d<=now}
+function fixedForMonth(m){return occurrencesForMonth(m).reduce((s,o)=>{if(isOccurrenceSkipped(o.f,o.date)||!dueOccurrenceIsVisible(o.date))return s;return s+occurrenceAmount(o.f,o.date)},0)}
+function fixedDateForMonth(f,m){let [y,mo]=m.split("-").map(Number),last=new Date(y,mo,0).getDate();return `${m}-${String(Math.min(Number(f.day||1),last)).padStart(2,"0")}`}
+function fixedCardPayMonth(f,m){if((f.paymentMethod||f.method)!=="card"||!f.cardId)return "";return purchasePaymentMonth({date:f.firstDueDate||fixedDateForMonth(f,m),cardId:f.cardId,type:"card_purchase",amount:f.amount})}
+function historicalDueForMonth(m){return data.cards.reduce((sum,c)=>{if(!c.includeDueHistory||c.dueOriginMonth!==m)return sum;let control=paymentControlMonth(c);let recorded=data.movements.filter(x=>x.cardId===c.id&&["card_purchase","msi_purchase"].includes(x.type)&&purchasePaymentMonth(x)===control).reduce((s,x)=>s+Number(x.amount),0);return sum+(recorded>0?0:Number(c.currentDue||0))},0)}
+function cardApproxNext(c){return Math.max(0,calcCardBalance(c)-Number(c.currentDue||0))}
+function reminderKey(c,type){return type==="pay"?`${c.id}|pay|${c.currentDueDate||paymentControlMonth(c)}`:`${c.id}|cut|${new Date().getFullYear()}-${new Date().getMonth()+1}-${c.cutDay}`}
+function acknowledgeReminder(cardId,type){let c=card(cardId);if(!c)return;data.reviewedReminders[reminderKey(c,type)]=true;save()}
+function fixedPaidAmountForAccount(a){let total=0;for(let f of data.fixedExpenses){let start=ym(f.firstDueDate||today()),end=ym(today());for(let date of occurrencesForFixed(f,start,end)){if(!dueOccurrenceIsVisible(date)||isOccurrenceSkipped(f,date))continue;let method=occurrenceMethod(f,date),source=occurrenceSource(f,date);if(["transfer","cash"].includes(method)&&source===a.id)total+=occurrenceAmount(f,date)}}return total}
+function fixedPaidAmountForCard(c){let total=0;for(let f of data.fixedExpenses){let start=ym(f.firstDueDate||today()),end=ym(today());for(let date of occurrencesForFixed(f,start,end)){if(!dueOccurrenceIsVisible(date)||isOccurrenceSkipped(f,date))continue;if(occurrenceMethod(f,date)==="card"&&occurrenceCard(f,date)===c.id)total+=occurrenceAmount(f,date)}}return total}
+function nextOccurrence(f){let start=ym(today()),end=addMonths(start,12);return occurrencesForFixed(f,start,end).find(d=>new Date(d+"T00:00:00")>=new Date(today()+"T00:00:00"))||""}
+function acceptOccurrence(id,date){let f=data.fixedExpenses.find(x=>x.id===id);if(!f)return;data.fixedPayments[occurrenceKey(f,date)]="accepted";save()}
+function skipOccurrence(id,date){let f=data.fixedExpenses.find(x=>x.id===id);if(!f)return;data.fixedPayments[occurrenceKey(f,date)]="skipped";save()}
+function adjustOccurrence(id,date){
+  let f=data.fixedExpenses.find(x=>x.id===id);if(!f)return;
+  let current=occurrenceAdjustment(f,date);
+  let amount=prompt("Monto para esta fecha:",current.amount??f.amount);
+  if(amount===null)return;
+  let choices=data.accounts.filter(a=>["debit","savings"].includes(a.type));
+  let msg="Cuenta de origen para esta fecha:\n"+choices.map((a,i)=>`${i+1}. ${a.name}`).join("\n");
+  let pick=prompt(msg,String(Math.max(1,choices.findIndex(a=>a.id===(current.sourceAccountId||f.sourceAccountId||f.accountId))+1)));
+  if(pick===null)return;
+  let chosen=choices[Number(pick)-1]||choices[0];
+  data.fixedAdjustments[occurrenceKey(f,date)]={...current,amount:Number(amount),sourceAccountId:chosen?.id||""};
+  save();
+}
+function movementClass(t){return t==="income"?"amount-income":t==="saving"?"amount-saving":t==="account_transfer"?"amount-withdraw":"amount-expense"}
+function movementSource(x){if(["saving","account_transfer"].includes(x.type))return `${account(x.sourceAccountId)?.name||"—"} → ${account(x.destinationAccountId)?.name||"—"}`;return card(x.cardId)?.name||account(x.accountId)?.name||"—"}
+function item(x){return `<div class="list-item"><div class="item-left"><div class="item-icon">${emoji[x.type]}</div><div class="item-text"><b>${x.description}</b><span>${new Date(x.date+"T12:00:00").toLocaleDateString("es-MX",{day:"numeric",month:"short"})} · ${movementSource(x)}</span></div></div><div class="item-amount ${movementClass(x.type)}">${x.type==="income"?"+":"−"}${money(x.amount).replace("-","")}</div></div>`}
+function populate(){category.innerHTML=fixedCategory.innerHTML=categories.map(c=>`<option value="${c[0]}">${c[1]} ${c[0]}</option>`).join("");date.value=today();let opts=[];for(let y=2025;y<=2027;y++){for(let m=1;m<=12;m++){let v=`${y}-${String(m).padStart(2,"0")}`;opts.push(`<option value="${v}">${monthName(v)}</option>`)}}monthSelect.innerHTML=opts.join("");if(![...monthSelect.options].some(o=>o.value===selectedMonth))selectedMonth="2026-07";monthSelect.value=selectedMonth;refreshSelectors()}
+function refreshSelectors(){let cards=data.cards.map(c=>`<option value="${c.id}">💳 ${c.name}</option>`).join("");cardId.innerHTML=cards;if(window.fixedCardId)fixedCardId.innerHTML=cards;let ao=data.accounts.map(a=>`<option value="${a.id}">${a.type==="savings"?"🐷":a.type==="cash"?"💵":"🏦"} ${a.name}</option>`).join("");accountId.innerHTML=sourceAccountId.innerHTML=destinationAccountId.innerHTML=ao;if(window.fixedAccountId)fixedAccountId.innerHTML=ao}
+function filterSelect(select,types){select.innerHTML=data.accounts.filter(a=>types.includes(a.type)).map(a=>`<option value="${a.id}">${a.type==="savings"?"🐷":a.type==="cash"?"💵":"🏦"} ${a.name}</option>`).join("")}
+function setType(t){
+movementType.value=t;
+document.querySelectorAll("[data-type]").forEach(b=>b.classList.toggle("active",b.dataset.type===t));
+categoryField.style.display=["card_purchase","cash_expense","msi_purchase","fixed_expense"].includes(t)?"block":"none";
+cardField.style.display=["card_purchase","card_payment","msi_purchase"].includes(t)?"block":"none";
+accountField.style.display=["cash_expense","income","card_payment"].includes(t)?"block":"none";
+sourceAccountField.style.display=["saving","account_transfer","fixed_expense"].includes(t)?"block":"none";
+destinationAccountField.style.display=["saving","account_transfer"].includes(t)?"block":"none";
+monthsField.style.display=t==="msi_purchase"?"block":"none";
+frequencyField.style.display=t==="fixed_expense"?"block":"none";
+firstDueDateField.style.display=t==="fixed_expense"?"block":"none";
+paymentMethodField.style.display=t==="fixed_expense"?"block":"none";
+if(t==="income"){accountLabel.textContent="Cuenta de nómina";filterSelect(accountId,["debit"])}
+if(t==="cash_expense"){accountLabel.textContent="Cuenta de origen";filterSelect(accountId,["debit","savings"])}
+if(t==="card_payment"){accountLabel.textContent="Cuenta desde la que pagas";filterSelect(accountId,["debit","savings"])}
+if(t==="saving"){filterSelect(sourceAccountId,["debit"]);filterSelect(destinationAccountId,["savings"])}
+if(t==="account_transfer"){filterSelect(sourceAccountId,["savings"]);filterSelect(destinationAccountId,["debit"])}
+if(t==="fixed_expense"){filterSelect(sourceAccountId,["debit","savings"]);if(!firstDueDate.value)firstDueDate.value=today()}
+}
+function renderHome(){let s=stats(selectedMonth),next=addMonths(selectedMonth,1),payments=data.cards.filter(c=>paymentControlMonth(c)===selectedMonth),pending=payments.filter(c=>c.currentDueStatus!=="paid");let confirmedTotal=payments.reduce((sum,c)=>sum+(c.currentDueStatus==="paid"?0:estimatedCurrentDue(c)),0);heroSpend.textContent=money(s.real);heroPeriod.textContent=monthName(selectedMonth);heroCash.textContent=money(s.cardSpend+s.cash+s.historical);heroAvailable.textContent=money(s.remaining);paymentMonthTotal.textContent=money(confirmedTotal);nextPaymentEstimate.textContent=money(data.cards.reduce((sum,c)=>sum+cardApproxNext(c),0));pendingCards.textContent=pending.length;mCard.textContent=money(s.cardSpend+s.historical);mCash.textContent=money(s.cash);mFixed.textContent=money(s.fixed);mSavings.textContent=money(s.saving);let used=s.budget?Math.min(100,(s.cardSpend+s.cash+s.historical)/s.budget*100):0;budgetBar.style.width=used+"%";budgetPct.textContent=Math.round(used)+"%";budgetFormula.textContent=`Presupuesto ${money(s.budget)}`;budgetRemaining.textContent=`Queda ${money(s.remaining)}`;let goal=s.goal,sp=goal?Math.min(100,Math.max(0,s.saving)/goal*100):0;savingBar.style.width=sp+"%";savingProgress.textContent=`Ahorro neto ${money(s.saving)} de ${money(goal)}`;savingShortfall.textContent=carryShortfall(selectedMonth)?`Incluye arrastre ${money(carryShortfall(selectedMonth))}`:`Falta ${money(Math.max(0,goal-s.saving))}`;currentSavings.textContent=money(currentSavingsBalance());currentSavings.classList.toggle("hidden-value",!!data.settings.privacy);privacyBtn.textContent=data.settings.privacy?"👁️ Mostrar":"🙈 Ocultar";paymentMonthLabel.textContent=monthName(selectedMonth);monthPaymentsList.innerHTML=payments.length?payments.map(c=>`<div class="list-item"><div class="item-left"><div class="item-icon">${c.currentDueStatus==="paid"?"✅":"💳"}</div><div class="item-text"><b>${c.name}</b><span>${c.currentDueDate?new Date(c.currentDueDate+"T12:00:00").toLocaleDateString("es-MX",{day:"numeric",month:"short"}):"Sin fecha"} · ${c.currentDueStatus==="paid"?"Pagado":"Pendiente"}</span><div class="origin-note">Este pago se asocia al gasto de ${c.dueOriginMonth?monthName(c.dueOriginMonth):"un mes sin asignar"}.</div></div></div><div class="item-amount">${money(estimatedCurrentDue(c))}</div></div>`).join(""):`<div class="empty">No hay pagos asignados a este mes.</div>`;let reminders=data.cards.map(c=>{let d=daysToDate(c.currentDueDate),payKey=reminderKey(c,"pay");if(d!==null&&d>=0&&d<=5&&c.currentDueStatus!=="paid"&&!data.reviewedReminders[payKey])return `<div class="list-item reminder"><div class="item-left"><div class="item-icon">⏰</div><div class="item-text"><b>Confirma ${c.name}</b><span>Faltan ${d} días para pagar. Actualiza el pago para no generar intereses y la fecha.</span></div></div><div class="actions"><button class="btn small secondary" onclick="openCardModal('${c.id}')">Revisar</button><button class="btn small ghost" onclick="acknowledgeReminder('${c.id}','pay')">Revisado</button></div></div>`;let cut=daysUntilCut(c),cutKey=reminderKey(c,"cut");if(cut>=0&&cut<=5&&!data.reviewedReminders[cutKey])return `<div class="list-item reminder"><div class="item-left"><div class="item-icon">✂️</div><div class="item-text"><b>${c.name} corta pronto</b><span>Faltan ${cut} días para el corte. Revisa el estado de cuenta cuando cierre.</span></div></div><div class="actions"><button class="btn small secondary" onclick="openCardModal('${c.id}')">Revisar</button><button class="btn small ghost" onclick="acknowledgeReminder('${c.id}','cut')">Revisado</button></div></div>`;return ""}).filter(Boolean);let fixedReminders=[];
+for(let f of data.fixedExpenses){
+  let nx=nextOccurrence(f);if(!nx)continue;
+  let dd=daysToDate(nx);
+  if(dd===1&&!isOccurrenceAccepted(f,nx)&&!isOccurrenceSkipped(f,nx)){
+    fixedReminders.push(`<div class="list-item reminder"><div class="item-left"><div class="item-icon">📌</div><div class="item-text"><b>${f.name} se paga mañana</b><span>${money(occurrenceAmount(f,nx))} · ${occurrenceMethod(f,nx)==="cash"?"Efectivo":occurrenceMethod(f,nx)==="card"?"Tarjeta":"Transferencia"} · desde ${account(occurrenceSource(f,nx))?.name||"cuenta por definir"}</span></div></div><div class="actions"><button class="btn small secondary" onclick="acceptOccurrence('${f.id}','${nx}')">Aceptar</button><button class="btn small ghost" onclick="adjustOccurrence('${f.id}','${nx}')">Ajustes</button></div></div>`)
+  }
+}
+cutReminders.innerHTML=reminders.concat(fixedReminders).join("");let recent=[...data.movements].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);recentList.innerHTML=recent.length?recent.map(item).join(""):`<div class="empty">Aún no hay movimientos.</div>`}
+function renderMoves(){let xs=[...data.movements].sort((a,b)=>b.date.localeCompare(a.date));movesBody.innerHTML=xs.length?xs.map(x=>`<tr><td>${x.date}</td><td>${emoji[x.type]} ${x.description}</td><td>${x.category?cat(x.category).emoji+" "+x.category:"—"}</td><td>${movementSource(x)}</td><td>${["card_purchase","msi_purchase"].includes(x.type)?monthName(purchasePaymentMonth(x)):"—"}</td><td class="${movementClass(x.type)}"><b>${money(x.amount)}</b></td><td><div class="actions"><button class="btn small ghost" onclick="editMove('${x.id}')">✏️</button><button class="btn small danger" onclick="delMove('${x.id}')">🗑️</button></div></td></tr>`).join(""):`<tr><td colspan="7">Sin movimientos</td></tr>`}
+function renderCards(){cardsGrid.innerHTML=data.cards.map(c=>`<div class="card"><div class="credit-card" style="background:linear-gradient(135deg,${c.color},#92a0ff)"><h3>💳 ${c.name}</h3><div class="cc-balance">${money(calcCardBalance(c))}</div><div style="font-size:.7rem">Saldo actual calculado</div><div class="cc-meta"><span>✂️ Corte ${c.cutDay}</span><span>📅 Pago ${c.dueDay}</span></div></div><div class="list" style="margin-top:9px"><div class="list-item safe-fab"><div class="item-text"><b>Pago para no generar intereses</b><span>${c.currentDueDate||"Sin fecha"} · ${paymentControlMonth(c)?monthName(paymentControlMonth(c)):"Sin asignar"}</span></div><div class="item-amount">${money(estimatedCurrentDue(c))}</div></div><div class="list-item safe-fab"><div class="item-text"><b>Próximo pago aproximado</b><span>Saldo actual menos el pago para no generar intereses</span></div><div class="item-amount">${money(cardApproxNext(c))}</div></div><div class="list-item"><div class="item-text"><b>Línea disponible estimada</b><span>Línea de crédito menos saldo actual</span></div><div class="item-amount">${money(Math.max(0,Number(c.limit||0)-calcCardBalance(c)))}</div></div></div><div class="form-actions"><button class="btn small secondary" onclick="openCardModal('${c.id}')">Editar</button></div></div>`).join("");accountsGrid.innerHTML=data.accounts.map(a=>`<div class="card"><div style="font-size:1.45rem">${a.type==="savings"?"🐷":a.type==="cash"?"💵":"🏦"}</div><b>${a.name}</b><div class="private-value ${data.settings.privacy&&a.type==="savings"?"hidden-value":""}" style="font-size:1.28rem;font-weight:900;margin-top:8px">${money(calcAccountBalance(a))}</div><small style="color:var(--muted)">${a.type==="savings"?"Ahorro":a.type==="cash"?"Efectivo":"Débito / nómina"}</small><div class="form-actions"><button class="btn small secondary" onclick="openAccountModal('${a.id}')">Editar</button></div></div>`).join("")}
+function renderFixed(){fixedList.innerHTML=data.fixedExpenses.length?data.fixedExpenses.map(f=>{let nx=nextOccurrence(f),method=occurrenceMethod(f,nx||today()),medium=method==="card"?(card(occurrenceCard(f,nx||today()))?.name||"Tarjeta"):method==="cash"?"Efectivo":`Transferencia desde ${account(occurrenceSource(f,nx||today()))?.name||"cuenta"}`;let freq=f.frequency==="weekly"?"Cada semana":f.frequency==="fortnightly"?"Cada 2 semanas":f.frequency==="monthly"?"Cada mes":"Una sola vez";return `<div class="card"><div class="bar-head"><div><b>${cat(f.category).emoji} ${f.name}</b><div class="sub" style="color:var(--muted)">${freq} · ${medium}</div></div><b>${money(f.amount)}</b></div><div class="origin-note">Próximo cargo: ${nx?new Date(nx+"T12:00:00").toLocaleDateString("es-MX",{day:"numeric",month:"long",year:"numeric"}):"sin próximos cargos"}</div><div class="form-actions"><button class="btn small secondary" onclick="openFixedModal('${f.id}')">Editar regla</button><button class="btn small danger" onclick="delFixed('${f.id}')">Eliminar</button></div></div>`}).join(""):`<div class="card empty">No hay gastos fijos.</div>`}
+function daysUntilCut(c){let now=new Date(),cut=new Date(now.getFullYear(),now.getMonth(),Math.min(c.cutDay,new Date(now.getFullYear(),now.getMonth()+1,0).getDate()));if(now.getDate()>c.cutDay)cut=new Date(now.getFullYear(),now.getMonth()+1,c.cutDay);return Math.ceil((cut-now)/(86400000))}
+function renderAnalysis(){cutoffAnalysis.innerHTML=data.cards.map(c=>{let d=daysUntilCut(c);return `<div class="list-item"><div class="item-left"><div class="item-icon">✂️</div><div class="item-text"><b>${c.name}</b><span>${d===0?"El corte es hoy":`Faltan ${d} días para el corte`}</span></div></div><div class="analysis-copy">Compra después del corte para que pase al siguiente ciclo</div></div>`}).join("")}
+function renderPlan(){let p=plan(selectedMonth);planMonthLabel.textContent=monthName(selectedMonth);planIncome.value=p.income||"";planSavingGoal.value=p.savingGoal||"";paydayInput.value=data.settings.payday||7}
+function renderAll(){refreshSelectors();renderHome();renderMoves();renderCards();renderFixed();renderAnalysis();renderPlan();drawCharts();applyTheme()}
+quickForm.onsubmit=e=>{
+e.preventDefault();
+let t=movementType.value;
+if(t==="fixed_expense"){
+  let f={id:uid(),name:description.value.trim(),amount:Number(amount.value),category:category.value,frequency:frequency.value,firstDueDate:firstDueDate.value,paymentMethod:paymentMethod.value,sourceAccountId:paymentMethod.value==="card"?"":sourceAccountId.value,cardId:paymentMethod.value==="card"?cardId.value:"",active:true};
+  data.fixedExpenses.push(f);
+  save();clearQuick();goTo("fixed");return
+}
+let o={id:editId.value||uid(),type:t,amount:Number(amount.value),date:date.value,description:description.value.trim(),category:["card_purchase","cash_expense","msi_purchase"].includes(t)?category.value:"",cardId:["card_purchase","card_payment","msi_purchase"].includes(t)?cardId.value:"",accountId:["cash_expense","income","card_payment"].includes(t)?accountId.value:"",sourceAccountId:["saving","account_transfer"].includes(t)?sourceAccountId.value:"",destinationAccountId:["saving","account_transfer"].includes(t)?destinationAccountId.value:"",months:t==="msi_purchase"?Number(months.value):0};
+let i=data.movements.findIndex(x=>x.id===o.id);i>=0?data.movements[i]=o:data.movements.push(o);
+save();clearQuick();goTo("moves")
+};function clearQuick(){quickForm.reset();editId.value="";date.value=today();firstDueDate.value=today();months.value=6;setType("card_purchase")}
+typeChips.onclick=e=>{let b=e.target.closest("[data-type]");if(b){e.preventDefault();setType(b.dataset.type)}};clearForm.onclick=clearQuick;
+function editMove(id){let x=data.movements.find(m=>m.id===id);if(!x)return;editId.value=x.id;setType(x.type);amount.value=x.amount;date.value=x.date;description.value=x.description;category.value=x.category||"Otros";if(x.cardId)cardId.value=x.cardId;if(x.accountId)accountId.value=x.accountId;if(x.sourceAccountId)sourceAccountId.value=x.sourceAccountId;if(x.destinationAccountId)destinationAccountId.value=x.destinationAccountId;months.value=x.months||6;goTo("add")}
+function delMove(id){if(confirm("¿Eliminar este movimiento?")){data.movements=data.movements.filter(x=>x.id!==id);save()}}
+function openCardModal(id=""){let c=card(id);editCardId.value=id;cardName.value=c?.name||"";cardLast4.value=c?.last4||"";cardLimit.value=c?.limit||0;cardBalance.value=c?.balance||0;cutDay.value=c?.cutDay||10;dueDay.value=c?.dueDay||30;currentDue.value=c?.currentDue||0;currentDueDate.value=c?.currentDueDate||"";currentDueMonth.value=c?.currentDueMonth||selectedMonth;dueOriginMonth.value=c?.dueOriginMonth||addMonths(currentDueMonth.value||selectedMonth,-1);includeDueHistory.value=c?.includeDueHistory===false?"no":"yes";currentDueStatus.value=c?.currentDueStatus||"pending";cardColor.value=c?.color||"#405de6";cardModal.classList.add("open")}
+cardForm.onsubmit=e=>{e.preventDefault();let o={id:editCardId.value||uid(),name:cardName.value,last4:cardLast4.value,limit:Number(cardLimit.value),balance:Number(cardBalance.value),cutDay:Number(cutDay.value),dueDay:Number(dueDay.value),currentDue:Number(currentDue.value),currentDueDate:currentDueDate.value,currentDueMonth:currentDueMonth.value,dueOriginMonth:dueOriginMonth.value,includeDueHistory:includeDueHistory.value==="yes",currentDueStatus:currentDueStatus.value,color:cardColor.value},i=data.cards.findIndex(x=>x.id===o.id);i>=0?data.cards[i]=o:data.cards.push(o);save();closeModal("cardModal")};function openAccountModal(id=""){let a=account(id);editAccountId.value=id;accountName.value=a?.name||"";accountType.value=a?.type||"debit";accountBalance.value=a?.balance||0;accountModal.classList.add("open")}
+accountForm.onsubmit=e=>{e.preventDefault();let o={id:editAccountId.value||uid(),name:accountName.value,type:accountType.value,balance:Number(accountBalance.value)},i=data.accounts.findIndex(x=>x.id===o.id);i>=0?data.accounts[i]=o:data.accounts.push(o);save();closeModal("accountModal")}
+function setFixedMethod(){fixedCardField.style.display=fixedMethod.value==="card"?"block":"none";fixedAccountField.style.display=["transfer","cash"].includes(fixedMethod.value)?"block":"none"}function openFixedModal(id=""){let f=data.fixedExpenses.find(x=>x.id===id);editFixedId.value=id;fixedName.value=f?.name||"";fixedAmount.value=f?.amount||"";fixedCategory.value=f?.category||"Casa";fixedFrequency.value=f?.frequency||"monthly";fixedFirstDueDate.value=f?.firstDueDate||today();fixedMethod.value=f?.paymentMethod||f?.method||"transfer";refreshSelectors();fixedCardId.value=f?.cardId||data.cards[0]?.id||"";fixedAccountId.value=f?.sourceAccountId||f?.accountId||data.accounts.find(a=>a.type==="debit")?.id||"";setFixedMethod();fixedModal.classList.add("open")}
+fixedMethod.onchange=setFixedMethod;fixedForm.onsubmit=e=>{e.preventDefault();let o={id:editFixedId.value||uid(),name:fixedName.value,amount:Number(fixedAmount.value),category:fixedCategory.value,frequency:fixedFrequency.value,firstDueDate:fixedFirstDueDate.value,paymentMethod:fixedMethod.value,sourceAccountId:["transfer","cash"].includes(fixedMethod.value)?fixedAccountId.value:"",cardId:fixedMethod.value==="card"?fixedCardId.value:"",active:true},i=data.fixedExpenses.findIndex(x=>x.id===o.id);i>=0?data.fixedExpenses[i]=o:data.fixedExpenses.push(o);save();closeModal("fixedModal")};function delFixed(id){data.fixedExpenses=data.fixedExpenses.filter(x=>x.id!==id);save()}function closeModal(id){$(id).classList.remove("open")}
+saveMonthPlan.onclick=()=>{data.monthlyPlans[selectedMonth]={income:Number(planIncome.value||0),savingGoal:Number(planSavingGoal.value||0)};data.settings.payday=Number(paydayInput.value||7);save();alert("Guardado sólo para "+monthName(selectedMonth))}
+monthSelect.onchange=e=>{selectedMonth=e.target.value;renderAll()}
+function goToPlan(){goTo("settings");setTimeout(()=>planSavingGoal.focus(),100)}
+function goTo(p){document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===p));document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===p));fab.classList.toggle("hidden",["cards","settings","fixed"].includes(p));if(p==="analysis")drawCharts();scrollTo(0,0)}
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>goTo(b.dataset.page));
+function applyTheme(){document.documentElement.dataset.theme=data.settings.theme||"light";themeBtn.textContent=data.settings.theme==="dark"?"☀️":"🌙"};privacyBtn.onclick=()=>{data.settings.privacy=!data.settings.privacy;save()};function toggleTheme(){data.settings.theme=data.settings.theme==="dark"?"light":"dark";save()}themeBtn.onclick=themeSettingsBtn.onclick=toggleTheme;
+function canvas(id){let c=$(id),r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=r.width*d;c.height=250*d;let x=c.getContext("2d");x.scale(d,d);return{x,w:r.width,h:250}}
+function drawCharts(){requestAnimationFrame(()=>{let a=canvas("trendChart"),months=[],n=new Date();for(let i=5;i>=0;i--){let d=new Date(n.getFullYear(),n.getMonth()-i,1);months.push(d.toISOString().slice(0,7))}let vals=months.map(m=>stats(m).real),mx=Math.max(1,...vals)*1.15;a.x.clearRect(0,0,a.w,a.h);a.x.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--primary");a.x.lineWidth=3;a.x.beginPath();vals.forEach((v,i)=>{let px=35+i*(a.w-55)/5,py=20+185*(1-v/mx);i?a.x.lineTo(px,py):a.x.moveTo(px,py);a.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--muted");a.x.fillText(months[i].slice(5),px-6,235)});a.x.stroke();let b=canvas("categoryChart"),rows={};data.movements.filter(z=>ym(z.date)===selectedMonth&&["card_purchase","cash_expense","msi_purchase"].includes(z.type)).forEach(z=>rows[z.category]=(rows[z.category]||0)+Number(z.amount));let arr=Object.entries(rows).sort((x,y)=>y[1]-x[1]).slice(0,6),max=Math.max(1,...arr.map(x=>x[1]));b.x.clearRect(0,0,b.w,b.h);arr.forEach(([k,v],i)=>{let y=15+i*36;b.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--muted");b.x.fillText(cat(k).emoji+" "+k,8,y+14);b.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--primary");b.x.fillRect(110,y,(b.w-150)*v/max,18);b.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--text");b.x.fillText(money(v),115+(b.w-150)*v/max,y+14)})})}
+exportBtn.onclick=()=>{let a=document.createElement("a"),b=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});a.href=URL.createObjectURL(b);a.download="respaldo-finanzas-"+today()+".json";a.click()};importInput.onchange=async e=>{try{data=JSON.parse(await e.target.files[0].text());save()}catch{alert("Archivo inválido")}}
+populate();setType("card_purchase");renderAll();
+</script>
+</body></html>
