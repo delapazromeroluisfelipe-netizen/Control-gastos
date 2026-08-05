@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Mi Control Financiero V11</title>
+<title>Mi Control Financiero V12</title>
 <style>
 :root{--bg:#f4f6fb;--card:#fff;--text:#172039;--muted:#6d7690;--line:#e5e9f2;--primary:#4567f2;--primary2:#7f94ff;--success:#18966b;--warning:#d99a20;--danger:#d95362;--cash:#7b5bd6;--shadow:0 12px 30px rgba(26,39,74,.08);--radius:22px}
 [data-theme="dark"]{--bg:#101522;--card:#171e2e;--text:#f4f7ff;--muted:#9ca8bf;--line:#293247;--primary:#7890ff;--primary2:#4f65ce;--success:#4dcc98;--warning:#f0b54a;--danger:#ff7a87;--cash:#aa8cff;--shadow:0 12px 30px rgba(0,0,0,.25)}
@@ -286,7 +286,7 @@
 
 <script>
 const $=id=>document.getElementById(id);
-const STORAGE_KEY="financeControlV11";
+const STORAGE_KEY="financeControlV12";
 const DEFAULT_CATEGORIES=[["Comida","🍽️"],["Supermercado","🛒"],["Transporte","🚗"],["Casa","🏠"],["Servicios","💡"],["Salud","🩺"],["Entretenimiento","🎬"],["Ropa","👕"],["Educación","📚"],["Viajes","✈️"],["Otros","📦"]];
 const labels={card_purchase:"Compra con tarjeta",cash_expense:"Retiro de efectivo",card_payment:"Pago de tarjeta",income:"Ingreso / nómina",saving:"Ahorro nuevo",loan_draw:"Uso de ahorro",fixed_expense:"Gasto fijo",msi_purchase:"Compra a MSI"};
 const emoji={card_purchase:"💳",cash_expense:"💵",card_payment:"🧾",income:"💰",saving:"🐷",loan_draw:"🔄",fixed_expense:"📌",msi_purchase:"🗓️"};
@@ -313,7 +313,7 @@ function num(v){let n=Number(v);return Number.isFinite(n)?n:0}
 function nextCreatedAt(){return Math.max(Date.now(),data?.movements?.reduce((m,x)=>Math.max(m,num(x.createdAt)+1),0)||0)}
 
 const defaults={
- version:11,meta:{},
+ version:12,meta:{},
  settings:{payday:6,theme:"light",privacy:false},
  categories:deepCopy(DEFAULT_CATEGORIES),
  monthlyPlans:{"2026-07":{income:0,payDate:"2026-07-06",nextPayDate:"2026-08-06",savingMode:"percent",savingValue:0}},
@@ -378,7 +378,7 @@ function normalize(d){
  d.settings={...defaults.settings,...(d.settings||{})};
  d.monthlyPlans=d.monthlyPlans||{};d.reviewedReminders=d.reviewedReminders||{};d.fixedPayments=d.fixedPayments||{};d.fixedAdjustments=d.fixedAdjustments||{};
  d.categories=(d.categories||deepCopy(DEFAULT_CATEGORIES)).map(c=>Array.isArray(c)?[String(c[0]||"Otros"),String(c[1]||"📦")]:[String(c.name||"Otros"),String(c.emoji||"📦")]);
- d.cards=(d.cards||deepCopy(defaults.cards)).map(c=>({...c,balance:num(c.balance),balanceDate:c.balanceDate||"",cutDay:num(c.cutDay)||10,dueDay:num(c.dueDay)||30}));
+ d.cards=(d.cards||deepCopy(defaults.cards)).map(c=>({...c,balance:num(c.balance),balanceDate:c.balanceDate||"",balanceSnapshotAt:num(c.balanceSnapshotAt),cutDay:num(c.cutDay)||10,dueDay:num(c.dueDay)||30,projectionBase:num(c.projectionBase),projectionBaseDate:c.projectionBaseDate||"",projectionBaseAt:num(c.projectionBaseAt),projectionCutDate:c.projectionCutDate||""}));
  d.accounts=(d.accounts||deepCopy(defaults.accounts)).map(a=>({...a,balance:num(a.balance),balanceDate:a.balanceDate||""}));
  d.statements=(d.statements||[]).map(s=>({...s,salaryMonth:s.salaryMonth||addMonths(ym(s.cutDate),1),amount:s.amount===""||s.amount===null||s.amount===undefined?"":num(s.amount),minimum:num(s.minimum),note:s.note||""}));
  d.budgetBuckets=(d.budgetBuckets||deepCopy(defaults.budgetBuckets)).map(b=>({...b,mode:b.mode||"amount",value:num(b.value!==undefined?b.value:b.limit)}));
@@ -398,12 +398,32 @@ function upgradeToV10(d,fromLegacy=false){
   for(let p of pays.filter(x=>!x.statementId)){let twin=pays.find(q=>q.id!==p.id&&q.cardId===p.cardId&&Math.abs(num(q.amount)-num(p.amount))<0.01&&!!q.statementId&&Math.abs(num(q.createdAt)-num(p.createdAt))<=30*60*1000&&Math.abs(daysBetween(q.date,p.date))<=3);if(twin){p.voided=true;p.voidReason=`Posible duplicado del pago registrado el ${twin.date}.`;repairLog.push(`Se anuló un posible pago duplicado de ${cardNameIn(d,p.cardId)}.`)}}
   d.meta.balanceSnapshotDate=snapshotDate;
  }
- d.statements=d.statements.map(s=>({...s,salaryMonth:s.salaryMonth||addMonths(ym(s.cutDate),1)}));d.version=11;d.meta.v11MigratedAt=d.meta.v11MigratedAt||today();if(repairLog.length)d.meta.repairLog=[...(d.meta.repairLog||[]),...repairLog];return d;
+ d.statements=d.statements.map(s=>({...s,salaryMonth:s.salaryMonth||addMonths(ym(s.cutDate),1)}));
+ // V12: si existe una fotografía bancaria de saldo, úsala para sembrar el
+ // siguiente estado proyectado. Esto evita que la proyección quede en $0
+ // sólo porque los movimientos históricos están antes de la fotografía.
+ let snapshotAt=num(d.meta.balanceSnapshotAt)||d.movements.reduce((mx,x)=>Math.max(mx,num(x.createdAt)),0);
+ if(snapshotAt&&!d.meta.balanceSnapshotAt)d.meta.balanceSnapshotAt=snapshotAt;
+ for(let c of d.cards){
+  if(c.balanceDate&&!c.balanceSnapshotAt)c.balanceSnapshotAt=snapshotAt;
+  if(c.projectionCutDate&&c.projectionBaseDate)continue;
+  if(!c.balanceDate)continue;
+  let cut=regularCutOnOrAfter(c,c.balanceDate),unpaid=0;
+  for(let s of d.statements.filter(s=>s.cardId===c.id&&s.cutDate<=c.balanceDate&&s.amount!==""&&s.amount!==null&&s.amount!==undefined)){
+   let paid=d.movements.filter(x=>!x.voided&&x.type==="card_payment"&&x.cardId===c.id&&x.statementId===s.id&&x.date>s.cutDate&&x.date<=c.balanceDate).reduce((a,x)=>a+num(x.amount),0);
+   unpaid+=Math.max(0,num(s.amount)-paid);
+  }
+  c.projectionBase=Math.max(0,num(c.balance)-unpaid);
+  c.projectionBaseDate=c.balanceDate;
+  c.projectionBaseAt=c.balanceSnapshotAt||snapshotAt;
+  c.projectionCutDate=cut;
+ }
+ d.version=12;d.meta.v12MigratedAt=d.meta.v12MigratedAt||today();if(repairLog.length)d.meta.repairLog=[...(d.meta.repairLog||[]),...repairLog];return d;
 }
 function cardNameIn(d,id){return d.cards.find(c=>c.id===id)?.name||"tarjeta"}
 function load(){
  try{let v=localStorage.getItem(STORAGE_KEY);if(v)return upgradeToV10(JSON.parse(v),false);}catch{}
- try{let v=localStorage.getItem("financeControlV10");if(v)return upgradeToV10(JSON.parse(v),false);}catch{}
+ try{let v=localStorage.getItem("financeControlV11")||localStorage.getItem("financeControlV10");if(v)return upgradeToV10(JSON.parse(v),false);}catch{}
  try{let v=localStorage.getItem("financeControlV9");if(v)return upgradeToV10(JSON.parse(v),false);}catch{}
  for(let k of ["financeControlV8","financeControlV7","financeControlV6","financeControlV5","financeControlV4","financeControlV3"]){try{let v=localStorage.getItem(k);if(v){let parsed=JSON.parse(v);if(["financeControlV6","financeControlV5","financeControlV4","financeControlV3"].includes(k))parsed=migrateOld(parsed);return upgradeToV10(parsed,true)}}catch{}}
  return upgradeToV10(deepCopy(defaults),false);
@@ -626,7 +646,7 @@ function renderReminders(){
 function renderBucketProgress(){let rows=(data.budgetBuckets||[]).map(b=>{let spent=categorySpend(b.category,selectedMonth),limit=bucketLimit(b,selectedMonth),pct=limit?Math.min(100,spent/limit*100):0,over=spent>limit&&limit>0;return `<div class="bucket-card"><div class="bucket-title"><b>${b.name}</b><span class="${over?"danger-copy":""}">${Math.round(pct)}%</span></div><div class="progress"><i style="width:${pct}%;${over?"background:var(--danger)":""}"></i></div><div class="bar-foot"><span>${cat(b.category).emoji} ${b.category}</span><span>${money(spent)} / ${money(limit)}</span></div></div>`}).join("");$("bucketProgressList").innerHTML=rows||`<div class="empty">No hay menús configurados.</div>`}
 function renderMoves(){let xs=[...data.movements].sort((a,b)=>num(b.createdAt)-num(a.createdAt));$("movesBody").innerHTML=xs.length?xs.map(x=>{let paymentInfo="—";if(["card_purchase","msi_purchase"].includes(x.type)){let cut=cutDateForPurchase(x),due=dueDateForCut(x.cardId,cut);paymentInfo=`${monthName(ym(due))}${x.type==="msi_purchase"?` · ${x.months} MSI`:""}`};if(x.type==="card_payment")paymentInfo=`Contabilizado en ${monthName(cardPaymentControlMonth(x))}`;if(x.voided)paymentInfo=`Anulado · ${x.voidReason||"no se incluye en cálculos"}`;return `<tr class="${x.voided?"voided-row":""}"><td>${x.date}</td><td>${emoji[x.type]||"•"} ${movementTitle(x)}${x.voided?` <span class="status-chip status-warn">Anulado</span>`:""}</td><td>${x.category?cat(x.category).emoji+" "+x.category:"—"}</td><td>${movementSource(x)}</td><td>${paymentInfo}</td><td class="${movementClass(x.type)}"><b>${money(x.amount)}</b></td><td><div class="actions"><button class="btn small ghost" onclick="editMove('${x.id}')">✏️</button><button class="btn small danger" onclick="delMove('${x.id}')">🗑️</button></div></td></tr>`}).join(""):`<tr><td colspan="7">Sin movimientos</td></tr>`}
 function renderCards(){
- $("cardsGrid").innerHTML=data.cards.map(c=>{let opens=openStatements(c.id),cur=opens[0],next=nextPaymentProjection(c),baseline=c.balanceDate?`Saldo base actualizado el ${fmtDate(c.balanceDate,{day:"numeric",month:"short"})}`:"Sin fecha base: se aplican todos los movimientos";return `<div class="card"><div class="credit-card" style="background:linear-gradient(135deg,${c.color},#92a0ff)"><h3>💳 ${c.name}</h3><div class="cc-balance">${money(calcCardBalance(c))}</div><div style="font-size:.7rem">Saldo actual calculado</div><div class="cc-meta"><span>✂️ Corte ${c.cutDay}</span><span>📅 Pago ${c.dueDay}</span></div></div><div class="origin-note">${baseline}. Cada compra posterior aumenta este saldo y cada pago posterior lo reduce.</div><div class="list" style="margin-top:9px"><div class="list-item"><div class="item-text"><b>Pago para no generar intereses pendiente</b><span>${cur?`Vence ${fmtDate(cur.dueDate)}`:"Sin estado pendiente"}</span></div><div class="item-amount">${cur?(hasStatementAmount(cur)?money(statementPending(cur)):"Capturar"):money(0)}</div></div><div class="list-item"><div class="item-text"><b>Próximo estado proyectado</b><span>Corte ${fmtDate(next.cutDate)} · vence ${fmtDate(next.dueDate)} · aumenta con cada compra asignada a ese corte</span></div><div class="item-amount">${money(next.amount)}</div></div><div class="list-item"><div class="item-text"><b>Línea disponible estimada</b><span>Línea menos saldo actual</span></div><div class="item-amount">${money(Math.max(0,num(c.limit)-calcCardBalance(c)))}</div></div></div><div class="form-actions"><button class="btn small secondary" onclick="openCardModal('${c.id}')">Editar</button><button class="btn small ghost" onclick="openStatementModal('${c.id}')">+ Estado</button></div></div>`}).join("");
+ $("cardsGrid").innerHTML=data.cards.map(c=>{let opens=openStatements(c.id),cur=opens[0],next=nextPaymentProjection(c),baseline=c.balanceDate?`Saldo base actualizado el ${fmtDate(c.balanceDate,{day:"numeric",month:"short"})}`:"Sin fecha base: se aplican todos los movimientos";return `<div class="card"><div class="credit-card" style="background:linear-gradient(135deg,${c.color},#92a0ff)"><h3>💳 ${c.name}</h3><div class="cc-balance">${money(calcCardBalance(c))}</div><div style="font-size:.7rem">Saldo actual calculado</div><div class="cc-meta"><span>✂️ Corte ${c.cutDay}</span><span>📅 Pago ${c.dueDay}</span></div></div><div class="origin-note">${baseline}. Cada compra posterior aumenta este saldo y cada pago posterior lo reduce.</div><div class="list" style="margin-top:9px"><div class="list-item"><div class="item-text"><b>Pago para no generar intereses pendiente</b><span>${cur?`Vence ${fmtDate(cur.dueDate)}`:"Sin estado pendiente"}</span></div><div class="item-amount">${cur?(hasStatementAmount(cur)?money(statementPending(cur)):"Capturar"):money(0)}</div></div><div class="list-item"><div class="item-text"><b>Próximo estado proyectado</b><span>Corte ${fmtDate(next.cutDate)} · vence ${fmtDate(next.dueDate)} · ${c.projectionCutDate===next.cutDate&&c.projectionBaseDate?`base bancaria ${money(c.projectionBase)} al ${fmtDate(c.projectionBaseDate,{day:"numeric",month:"short"})} + movimientos posteriores`:`compras asignadas a este corte`}</span></div><div class="item-amount">${money(next.amount)}</div></div><div class="list-item"><div class="item-text"><b>Línea disponible estimada</b><span>Línea menos saldo actual</span></div><div class="item-amount">${money(Math.max(0,num(c.limit)-calcCardBalance(c)))}</div></div></div><div class="form-actions"><button class="btn small secondary" onclick="openCardModal('${c.id}')">Editar</button><button class="btn small ghost" onclick="openStatementModal('${c.id}')">+ Estado</button></div></div>`}).join("");
  renderStatements();
  $("accountsGrid").innerHTML=data.accounts.map(a=>`<div class="card"><div style="font-size:1.45rem">${a.type==="savings"?"🐷":a.type==="cash"?"💵":"🏦"}</div><b>${a.name}</b><div class="private-value ${data.settings.privacy&&a.type==="savings"?"hidden-value":""}" style="font-size:1.28rem;font-weight:900;margin-top:8px">${money(calcAccountBalance(a))}</div><small style="color:var(--muted)">${a.type==="savings"?"Ahorro":a.type==="cash"?"Efectivo":"Débito / nómina"}</small><div class="origin-note">${a.balanceDate?`Saldo base actualizado el ${fmtDate(a.balanceDate,{day:"numeric",month:"short"})}`:"Sin fecha de saldo base"}</div><div class="form-actions"><button class="btn small secondary" onclick="openAccountModal('${a.id}')">Editar</button></div></div>`).join("");
 }
@@ -687,7 +707,7 @@ function applyTheme(){document.documentElement.dataset.theme=data.settings.theme
 $("privacyBtn").onclick=()=>{data.settings.privacy=!data.settings.privacy;save()};function toggleTheme(){data.settings.theme=data.settings.theme==="dark"?"light":"dark";save()}$("themeBtn").onclick=$("themeSettingsBtn").onclick=toggleTheme;
 function canvas(id){let c=$(id),r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=Math.max(1,r.width*d);c.height=250*d;let x=c.getContext("2d");x.scale(d,d);x.font="12px system-ui";return{x,w:r.width,h:250}}
 function drawCharts(){requestAnimationFrame(()=>{if(!$("trendChart").offsetParent)return;let a=canvas("trendChart"),months=[];for(let i=5;i>=0;i--)months.push(addMonths(selectedMonth,-i));let vals=months.map(consumptionForMonth),mx=Math.max(1,...vals)*1.15;a.x.clearRect(0,0,a.w,a.h);a.x.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--primary");a.x.lineWidth=3;a.x.beginPath();vals.forEach((v,i)=>{let px=35+i*(a.w-55)/5,py=20+185*(1-v/mx);i?a.x.lineTo(px,py):a.x.moveTo(px,py);a.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--muted");a.x.fillText(months[i].slice(5),px-6,235)});a.x.stroke();let b=canvas("categoryChart"),arr=Object.entries(allCategorySpends(selectedMonth)).sort((x,y)=>y[1]-x[1]).slice(0,6),max=Math.max(1,...arr.map(x=>x[1]));b.x.clearRect(0,0,b.w,b.h);if(!arr.length){b.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--muted");b.x.fillText("Aún no hay gastos en este mes",15,30)}arr.forEach(([k,v],i)=>{let y=15+i*36;b.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--muted");b.x.fillText(cat(k).emoji+" "+k,8,y+14);b.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--primary");b.x.fillRect(110,y,(b.w-150)*v/max,18);b.x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--text");b.x.fillText(money(v),115+(b.w-150)*v/max,y+14)})})}
-$("exportBtn").onclick=()=>{let a=document.createElement("a"),b=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});a.href=URL.createObjectURL(b);a.download="respaldo-finanzas-v11-"+today()+".json";a.click();URL.revokeObjectURL(a.href)};
+$("exportBtn").onclick=()=>{let a=document.createElement("a"),b=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});a.href=URL.createObjectURL(b);a.download="respaldo-finanzas-v12-"+today()+".json";a.click();URL.revokeObjectURL(a.href)};
 $("importInput").onchange=async e=>{try{data=upgradeToV10(JSON.parse(await e.target.files[0].text()),true);save()}catch{alert("Archivo inválido")}};
 
 /* ===== V11: reconciliación por fotografía de saldo =====
